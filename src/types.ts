@@ -11,4 +11,10 @@ type handlerCallback = (
       }>
 ) => void;
 
+declare global {
+  interface Window {
+    idbsql: IDBSQLCommands;
+  }
+}
+
 export { type handlerCallback };
