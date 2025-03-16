@@ -31,5 +31,4 @@ async function testDB() {
 
   console.log('Final Pokémon List:', await db.select().from(pokemonTable));
 }
-
 testDB();

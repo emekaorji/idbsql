@@ -1,6 +1,0 @@
-{
-  "watch": [".", "./src/worker.ts"],
-  "ext": ".ts,.js,.env",
-  "ignore": ["node_modules", "dist", "scripts"],
-  "exec": "npx ts-node ./scripts/generate-worker.ts"
-}
