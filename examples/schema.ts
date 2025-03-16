@@ -10,3 +10,9 @@ export const usersTable = sqliteTable('users', {
     .notNull()
     .default(false),
 });
+
+export const pokemonTable = sqliteTable('pokemon', {
+  id: integer('id').primaryKey(),
+  name: text('name').notNull(),
+  abilities: text('abilities').$type<string[]>(),
+});

@@ -1,33 +1,8 @@
 import { type handlerCallback } from './types';
+import { workerCode } from './worker';
 
 const messageHandlers = new Map<string, handlerCallback>();
 let worker: Worker | null = null;
-
-/**
- * Gets the URL of the worker script
- * @returns The URL of the worker script
- */
-function getWorkerScriptUrl(): string {
-  // Try to find the worker script in various locations
-
-  // 1. Check if we're in a bundled environment with a global __IDBSQL_WORKER_URL__ variable
-  if (typeof globalThis.__IDBSQL_WORKER_URL__ !== 'undefined') {
-    return globalThis.__IDBSQL_WORKER_URL__;
-  }
-
-  // 2. Try to find the script in the same directory as the current script
-  const scriptElements = document.getElementsByTagName('script');
-  for (let i = 0; i < scriptElements.length; i++) {
-    const src = scriptElements[i].src;
-    if (src && src.includes('idbsql')) {
-      const basePath = src.substring(0, src.lastIndexOf('/') + 1);
-      return `${basePath}idbsql-worker.js`;
-    }
-  }
-
-  // 3. Try to find the script in the current directory
-  return './idbsql-worker.js';
-}
 
 /**
  * Generates a unique message ID
@@ -41,8 +16,8 @@ function generateMessageId(): string {
  * Sets up the worker
  */
 function setupWorker() {
-  // Create a new worker with the worker script
-  const workerBlob = new Blob([`importScripts('${getWorkerScriptUrl()}');`], {
+  // Create a new worker with the embedded worker code
+  const workerBlob = new Blob([workerCode], {
     type: 'application/javascript',
   });
   worker = new Worker(URL.createObjectURL(workerBlob));
@@ -68,13 +43,16 @@ setupWorker();
  */
 async function client(
   sql: string,
-  params: any[],
-  method: 'run' | 'all' | 'values' | 'get'
+  params: any[] = [],
+  method: 'run' | 'all' | 'values' | 'get' = 'all'
 ) {
   return new Promise<{ rows: any[] }>((resolve, reject) => {
     if (!worker) {
-      reject('Worker not initialized');
-      return;
+      setupWorker();
+      if (!worker) {
+        reject(new Error('Failed to initialize worker'));
+        return;
+      }
     }
 
     const messageId = generateMessageId();

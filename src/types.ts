@@ -1,11 +1,4 @@
 /**
- * Global declarations
- */
-declare global {
-  var __IDBSQL_WORKER_URL__: string | undefined;
-}
-
-/**
  * The callback function for the worker message handler
  */
 type handlerCallback = (

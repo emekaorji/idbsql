@@ -61,40 +61,27 @@ await db.delete(userTable)
 
 ## Worker Script
 
-IDBSQL uses a worker script (`idbsql-worker.ts`) to run SQLite operations in a separate thread. This script is automatically included in the build and will be loaded by the library when needed.
+IDBSQL dynamically generates the worker script in the browser, eliminating the need for separate worker files or complex bundling configurations. This makes it much easier to use the library in any project without worrying about file paths or bundler configurations.
 
-### Custom Worker URL
+The worker script uses SQL.js to provide SQLite functionality in the browser, loaded from a CDN for convenience. This approach ensures that:
 
-If you need to specify a custom location for the worker script, you can set the global variable `__IDBSQL_WORKER_URL__`:
+1. No separate worker file needs to be included in your build
+2. No complex bundler configuration is required
+3. The library works out of the box in any environment
 
-```javascript
-// Set this before importing IDBSQL
-window.__IDBSQL_WORKER_URL__ = '/path/to/idbsql-worker.js';
+### Custom SQL.js Configuration
 
-// Then import and use IDBSQL
-import { createIDBSQL } from 'idbsql';
-```
+If you need to use a custom version of SQL.js or configure it differently, you can modify the worker code by editing the `src/worker.js` file and rebuilding the library.
 
-### Bundling with Webpack or Rollup
+### Development
 
-If you're using a bundler like Webpack or Rollup, you'll need to make sure the worker script is included in your build. Here's an example of how to do this with Webpack:
+If you're developing or contributing to IDBSQL, the worker code is stored in `src/worker.js` and is automatically inlined into the library during the build process. This approach provides better code organization and maintainability while still delivering a seamless experience for end users.
 
-```javascript
-// webpack.config.js
-module.exports = {
-  // ... other config
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'node_modules/idbsql/dist/idbsql-worker.js',
-          to: 'idbsql-worker.js'
-        },
-      ],
-    }),
-  ],
-};
-```
+To modify the worker:
+
+1. Edit the `src/worker.js` file
+2. Run `npm run build` to generate the inlined worker code
+3. Test your changes
 
 ## How It Works
 
