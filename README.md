@@ -22,7 +22,8 @@ npm install idbsql
 
 ```typescript
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-import { createIDBSQL } from 'idbsql';
+import { drizzle } from 'drizzle-orm/sqlite-proxy';
+import { client } from 'idbsql';
 
 // Define your schema
 const userTable = sqliteTable('users', {
@@ -32,12 +33,7 @@ const userTable = sqliteTable('users', {
 });
 
 // Initialize the database
-const db = await createIDBSQL({
-  dbName: 'my-database',
-  schema: {
-    users: userTable,
-  },
-});
+const db = drizzle(client, { schema });
 
 // Query the database
 const users = await db.select({
@@ -65,7 +61,7 @@ await db.delete(userTable)
 
 ## Worker Script
 
-IDBSQL uses a worker script (`idbsql-worker.js`) to run SQLite operations in a separate thread. This script is automatically included in the build and will be loaded by the library when needed.
+IDBSQL uses a worker script (`idbsql-worker.ts`) to run SQLite operations in a separate thread. This script is automatically included in the build and will be loaded by the library when needed.
 
 ### Custom Worker URL
 
