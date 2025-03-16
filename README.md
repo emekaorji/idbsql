@@ -1,14 +1,15 @@
 # IDBSQL
 
-A high-performance library for interacting with IndexedDB using SQLite and Drizzle ORM in a separate worker thread.
+A high-performance library for interacting with IndexedDB on the browser using SQLite and Drizzle ORM in a separate worker thread.
 
 ## Features
 
-- Uses SQLite WASM in a web worker for better performance
-- Drizzle ORM for type-safe database queries
-- In-memory database for fast queries
-- Asynchronous API with promises
-- TypeScript support
+- SQLite-powered IndexedDB wrapper that brings SQL capabilities to the browser
+- SQLite WASM execution in dedicated web worker thread
+- Type-safe query building via Drizzle ORM integration
+- In-memory database operations for minimal latency
+- Promise-based asynchronous API
+- Comprehensive TypeScript type definitions
 
 ## Installation
 
