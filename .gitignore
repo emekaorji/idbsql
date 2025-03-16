@@ -30,3 +30,6 @@ yarn-error.log*
 Thumbs.db
 
 dev-dist/
+
+# Generated worker files
+src/worker.ts
