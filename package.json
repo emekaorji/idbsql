@@ -1,6 +1,6 @@
 {
   "name": "idbsql",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "A library for interacting with IndexedDB using SQLite and Drizzle ORM in a worker thread",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
