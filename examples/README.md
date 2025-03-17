@@ -26,16 +26,6 @@ To run the example locally:
 
    This will start a Vite development server and open the example in your browser.
 
-## Building the Example
-
-To build the example for production:
-
-```
-npm run example:build
-```
-
-This will create a production-ready build in the `dist-example` directory.
-
 ## Example Structure
 
 - `index.html` - The HTML entry point
