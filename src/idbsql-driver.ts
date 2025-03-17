@@ -1,5 +1,5 @@
 import { type handlerCallback } from './types';
-import { workerCode } from './worker';
+import { workerCode } from './worker-generated';
 
 const messageHandlers = new Map<string, handlerCallback>();
 let worker: Worker | null = null;

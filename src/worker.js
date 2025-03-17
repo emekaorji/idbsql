@@ -1,10 +1,4 @@
 /**
- * This file is auto-generated from src/worker.js.
- * Do not modify this file directly, as it will be overwritten during the build process.
- * Instead, modify the src/worker.js file and run the build script.
- */
-
-export const workerCode = `/**
  * IDBSQL Worker
  *
  * This worker script handles database operations in a separate thread.
@@ -44,7 +38,7 @@ async function loadSQLJSLibrary() {
       // Initialize SQL.js with WebAssembly
       const SQL = await initSqlJs({
         locateFile: (file) =>
-          \`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/\${file}\`,
+          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
       });
 
       // Create a new database
@@ -58,6 +52,16 @@ async function loadSQLJSLibrary() {
       reject(error);
     }
   });
+}
+
+/**
+ * Creates tables based on the schema
+ * @param {Object} schema Database schema
+ */
+async function createTables(schema) {
+  // In a real implementation, this would create tables based on the schema
+  // For now, we'll just log the schema
+  console.log('Creating tables for schema:', schema);
 }
 
 /**
@@ -131,7 +135,7 @@ function executeQuery(sql, params, method) {
     case 'delete':
       return executeDeleteQuery(query, params);
     default:
-      throw new Error(\`Unknown query type: \${query.type}\`);
+      throw new Error(`Unknown query type: ${query.type}`);
   }
 
   // switch (method) {
@@ -151,7 +155,7 @@ function executeQuery(sql, params, method) {
   //     stmt.free();
   //     break;
   //   default:
-  //     throw new Error(\`Unknown method: \${method}\`);
+  //     throw new Error(`Unknown method: ${method}`);
   // }
 }
 
@@ -280,7 +284,7 @@ function sendResult(messageId, result) {
 function sendGlobalError(error) {
   self.postMessage({
     type: 'ERROR',
-    error: \`[Worker Global Error]: \${error?.message || 'Unknown error'}\`,
+    error: `[Worker Global Error]: ${error?.message || 'Unknown error'}`,
   });
 }
 
@@ -293,9 +297,8 @@ function sendMessageError(messageId, error) {
   self.postMessage({
     type: 'MESSAGE_ERROR',
     messageId,
-    error: \`[Worker Message Error]: \${error?.message || 'Unknown error'}\`,
+    error: `[Worker Message Error]: ${error?.message || 'Unknown error'}`,
   });
 }
 
 /** UTILITIES ⬆ */
-`;

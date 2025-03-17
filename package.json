@@ -8,14 +8,15 @@
     "dist/**/*"
   ],
   "scripts": {
-    "prebuild": "mkdir -p dist",
     "generate-worker": "ts-node ./scripts/generate-worker.ts",
-    "build": "npm run generate-worker && tsc",
-    "dev:worker": "nodemon --watch worker-raw.js --exec \"npm run generate-worker\"",
+    "dev:worker": "nodemon --watch worker.js --exec \"npm run generate-worker\"",
     "dev:tsc": "tsc --watch --outDir dev-dist",
     "dev": "concurrently \"npm run dev:worker\" \"npm run dev:tsc\"",
-    "test": "jest",
+    "prebuild": "mkdir -p dist",
+    "build": "npm run generate-worker && tsc",
     "prepare": "npm run build",
+    "preinstall": "npm run generate-worker",
+    "test": "jest",
     "example:dev": "vite examples"
   },
   "keywords": [
