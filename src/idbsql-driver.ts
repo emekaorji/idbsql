@@ -1,16 +1,11 @@
 import { type handlerCallback } from './types';
+import { generateMessageId } from './utils';
 import { workerCode } from './worker-generated';
 
 const messageHandlers = new Map<string, handlerCallback>();
 let worker: Worker | null = null;
 
-/**
- * Generates a unique message ID
- * @returns A unique message ID
- */
-function generateMessageId(): string {
-  return Math.random().toString(36).substring(2, 15);
-}
+setupWorker();
 
 /**
  * Sets up the worker
@@ -34,8 +29,6 @@ function setupWorker() {
     }
   };
 }
-
-setupWorker();
 
 /**
  * Creates a new client
