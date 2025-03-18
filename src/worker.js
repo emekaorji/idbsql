@@ -67,10 +67,14 @@ async function createTables(schema) {
 /**
  * Sets up the worker
  */
-function setup() {
-  loadSQLJSLibrary().then(() => {
+async function setup() {
+  try {
+    await loadSQLJSLibrary();
     console.log('[Worker]: SQL.js library loaded from CDN successfully');
-  });
+  } catch (error) {
+    console.error('[Worker]:', error);
+    sendGlobalError(error);
+  }
 }
 
 /** INITIALIZATION ⬆ */
@@ -82,23 +86,24 @@ function setup() {
  * @param {MessageEvent} event - The message event
  */
 function messageHandler(event) {
-  const { sql, params, method, messageId } = event.data;
+  console.log(event);
+  // const { sql, params, method, messageId } = event.data;
 
-  try {
-    // Execute the SQL query
-    const result = executeQuery(sql, params, method);
+  // try {
+  //   // Execute the SQL query
+  //   const result = executeQuery(sql, params, method);
 
-    // Format the result based on the method
-    const formattedResult = formatResult(result, method);
+  //   // Format the result based on the method
+  //   const formattedResult = formatResult(result, method);
 
-    // Send the result back to the main thread
-    self.postMessage({ messageId, result: formattedResult });
-  } catch (error) {
-    console.error('[Worker]:', error);
+  //   // Send the result back to the main thread
+  //   self.postMessage({ type: 'RESULT', messageId, data: formattedResult });
+  // } catch (error) {
+  //   console.error('[Worker]:', error);
 
-    // Send the error back to the main thread
-    sendMessageError(messageId, error);
-  }
+  //   // Send the error back to the main thread
+  //   sendError(messageId, error);
+  // }
 }
 
 /**
@@ -107,7 +112,7 @@ function messageHandler(event) {
  */
 function errorHandler(error) {
   console.error('[Worker]:', error);
-  sendGlobalError(error);
+  sendError('GLOBAL_ERROR', error);
 }
 
 /** HANDLERS ⬆ */
@@ -268,11 +273,11 @@ function formatResult(result, method) {
  * @param {string} id Message ID
  * @param {Object} result Result object
  */
-function sendResult(messageId, result) {
+function sendResult(messageId, data) {
   self.postMessage({
     type: 'RESULT',
     messageId,
-    result,
+    data,
   });
 }
 
@@ -281,23 +286,11 @@ function sendResult(messageId, result) {
  * @param {string} id Message ID
  * @param {string} error Error message
  */
-function sendGlobalError(error) {
+function sendError(messageId, error) {
   self.postMessage({
     type: 'ERROR',
-    error: `[Worker Global Error]: ${error?.message || 'Unknown error'}`,
-  });
-}
-
-/**
- * Sends an error message
- * @param {string} id Message ID
- * @param {string} error Error message
- */
-function sendMessageError(messageId, error) {
-  self.postMessage({
-    type: 'MESSAGE_ERROR',
     messageId,
-    error: `[Worker Message Error]: ${error?.message || 'Unknown error'}`,
+    error: `[Worker Error]: ${error?.message || 'Unknown error'}`,
   });
 }
 
