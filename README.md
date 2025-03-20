@@ -17,6 +17,27 @@ A high-performance library for interacting with IndexedDB on the browser using S
 npm install idbsql
 ```
 
+## ESM Module Format
+
+IDBSQL is distributed as an ESM (ECMAScript Modules) package. This modern module format provides better tree-shaking, static analysis, and compatibility with newer JavaScript tools and frameworks.
+
+### Usage with ESM
+
+```javascript
+import { client } from 'idbsql';
+```
+
+### Usage with CommonJS Projects
+
+If you're using a CommonJS project, you'll need to use dynamic imports:
+
+```javascript
+async function init() {
+  const { client } = await import('idbsql');
+  // Use client here
+}
+```
+
 ## Usage
 
 ### Define your schema
@@ -76,13 +97,65 @@ If you need to use a custom version of SQL.js or configure it differently, you c
 
 ### Development
 
-If you're developing or contributing to IDBSQL, the worker code is stored in `src/worker.js` and is automatically inlined into the library during the build process. This approach provides better code organization and maintainability while still delivering a seamless experience for end users.
+IDBSQL is built as an ESM (ECMAScript Modules) package. The development workflow has been configured to work seamlessly with modern JavaScript tooling.
 
-To modify the worker:
+#### Project Setup
+
+- **Module System**: Uses native ESM with `"type": "module"` in package.json
+- **TypeScript Config**: Configured with `"moduleResolution": "bundler"` for compatibility with modern bundlers
+- **Worker Generation**: Automatically inlines the worker code during build
+
+#### Development Commands
+
+```bash
+# Generate the worker code
+npm run generate-worker
+
+# Watch for changes and rebuild (worker, library, and examples)
+npm run dev
+
+# Build the library for production
+npm run build
+```
+
+#### Development Components
+
+The development workflow is split into three parallel processes, color-coded in the terminal for better visibility:
+
+- **Worker** (Gray): Watches for changes to worker.js and regenerates the worker code
+- **Library** (Green): Watches for changes to TypeScript files and rebuilds the library
+- **Examples** (Blue): Runs a Vite dev server for testing the library in a real-world context
+
+#### Development Tools
+
+- **tsx**: Fast TypeScript execution (replacing ts-node)
+- **Vite**: Used for serving example applications
+- **Concurrently**: Runs multiple development processes in parallel
+- **Nodemon**: Watches for file changes and triggers rebuilds
+
+#### Modifying the Worker
+
+If you need to modify the worker functionality:
 
 1. Edit the `src/worker.js` file
-2. Run `npm run build` to generate the inlined worker code
-3. Test your changes
+2. The changes will be automatically detected and the worker code will be regenerated
+3. The library will be rebuilt to include the new worker code
+
+#### Project Structure
+
+```
+idbsql/
+├── dist/                 # Compiled output (generated)
+├── src/                  # Source code
+│   ├── worker.js         # Web worker implementation
+│   ├── worker-generated.ts  # Auto-generated worker code (don't edit)
+│   └── index.ts          # Main library entry point
+├── scripts/
+│   └── generate-worker.ts # Script to generate worker code
+├── examples/             # Example applications
+├── package.json          # Project configuration
+└── tsconfig.json         # TypeScript configuration
+```
 
 ## How It Works
 
