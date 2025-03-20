@@ -2,8 +2,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: './',
-  publicDir: false,
+  publicDir: true,
   server: {
-    open: '/index.html',
+    watch: {
+      // Include dist directory in watch
+      ignored: ['!**/dist/**'],
+    },
   },
 });
