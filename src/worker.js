@@ -82,28 +82,62 @@ async function setup() {
 /** HANDLERS ⬇ */
 
 /**
+ * Handles setup messages
+ * @param {MessageEvent} event - The message event
+ */
+function setupMessageHandler(event) {
+  const { data } = event.data;
+  const { schema } = data;
+
+  // TODO:
+  // The first call to the worker file on initial page load should be to
+  // - [ ] Step 1: Create the Indexeddb database with the name `IDBSQL` and a store `IDBSQL-store`.
+  // - [ ] Step 2: Create a new in-memory database.
+  // - [ ] Step 3: Create the schemas in the in-memory database.
+  // - [ ] Step 4: Convert the DB to a file blob and save it to the IndexedDB database created in step 1.
+  //   - The "primary key" would be the in-memory database name (name would be passed during client initialization
+  //   - The "value" would be the in-memory database file blob.
+
+  // Notes: Each in-memory database created would be an object inside the idbsql store.
+}
+
+/**
+ * Handles client messages
+ * @param {MessageEvent} event - The message event
+ */
+function clientMessageHandler(event) {
+  const { data, messageId } = event.data;
+  const { method, params, sql } = data;
+
+  try {
+    // Execute the SQL query
+    const result = executeQuery(sql, params, method);
+
+    // Format the result based on the method
+    const formattedResult = formatResult(result, method);
+
+    // Send the result back to the main thread
+    sendResult(messageId, formattedResult);
+  } catch (error) {
+    // Send the error back to the main thread
+    sendError(messageId, error);
+  }
+}
+
+/**
  * Handles messages from the main thread
  * @param {MessageEvent} event - The message event
  */
 function messageHandler(event) {
-  console.log(event);
-  // const { sql, params, method, messageId } = event.data;
+  const { type, messageId } = event.data;
 
-  // try {
-  //   // Execute the SQL query
-  //   const result = executeQuery(sql, params, method);
-
-  //   // Format the result based on the method
-  //   const formattedResult = formatResult(result, method);
-
-  //   // Send the result back to the main thread
-  //   self.postMessage({ type: 'RESULT', messageId, data: formattedResult });
-  // } catch (error) {
-  //   console.error('[Worker]:', error);
-
-  //   // Send the error back to the main thread
-  //   sendError(messageId, error);
-  // }
+  if (type === 'SETUP') {
+    setupMessageHandler(event);
+  } else if (type === 'CLIENT') {
+    clientMessageHandler(event);
+  } else {
+    sendError(messageId, 'Unknown message type');
+  }
 }
 
 /**
@@ -127,21 +161,21 @@ function errorHandler(error) {
  * @returns {any} The result of the query
  */
 function executeQuery(sql, params, method) {
-  const query = JSON.parse(sql);
+  console.log(sql, params, method);
 
   // Execute the query based on its type
-  switch (query.type) {
-    case 'select':
-      return executeSelectQuery(query, params);
-    case 'insert':
-      return executeInsertQuery(query, params);
-    case 'update':
-      return executeUpdateQuery(query, params);
-    case 'delete':
-      return executeDeleteQuery(query, params);
-    default:
-      throw new Error(`Unknown query type: ${query.type}`);
-  }
+  // switch (query.type) {
+  //   case 'select':
+  //     return executeSelectQuery(query, params);
+  //   case 'insert':
+  //     return executeInsertQuery(query, params);
+  //   case 'update':
+  //     return executeUpdateQuery(query, params);
+  //   case 'delete':
+  //     return executeDeleteQuery(query, params);
+  //   default:
+  //     throw new Error(`Unknown query type: ${query.type}`);
+  // }
 
   // switch (method) {
   //   case 'run':
@@ -290,6 +324,17 @@ function sendError(messageId, error) {
   self.postMessage({
     type: 'ERROR',
     messageId,
+    error: `[Worker Error]: ${error?.message || 'Unknown error'}`,
+  });
+}
+
+/**
+ * Sends a global error message
+ * @param {string} error Error message
+ */
+function sendGlobalError(error) {
+  self.postMessage({
+    type: 'GLOBAL_ERROR',
     error: `[Worker Error]: ${error?.message || 'Unknown error'}`,
   });
 }

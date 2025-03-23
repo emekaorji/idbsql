@@ -128,7 +128,7 @@ The development workflow is split into three parallel processes, color-coded in 
 
 #### Development Tools
 
-- **tsx**: Fast TypeScript execution (replacing ts-node)
+- **tsx**: Fast TypeScript execution
 - **Vite**: Used for serving example applications
 - **Concurrently**: Runs multiple development processes in parallel
 - **Nodemon**: Watches for file changes and triggers rebuilds

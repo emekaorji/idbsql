@@ -5,7 +5,7 @@ declare global {
 }
 
 /** The type of message to be sent */
-type MessageType = 'client' | 'setup';
+type MessageType = 'CLIENT' | 'SETUP';
 
 // ----------------------------------------------------
 
@@ -22,20 +22,20 @@ interface SetupOutgoingMessageData {
 }
 
 /** The data to be sent in an outgoing message */
-type OutgoingMessageData<T extends MessageType> = T extends 'client'
+type OutgoingMessageData<T extends MessageType> = T extends 'CLIENT'
   ? ClientOutgoingMessageData
   : SetupOutgoingMessageData;
 
 /** The client outgoing message to be sent */
 interface ClientOutgoingMessage {
-  type: 'client';
+  type: 'CLIENT';
   data: ClientOutgoingMessageData;
   messageId: string;
 }
 
 /** The setup outgoing message to be sent */
 interface SetupOutgoingMessage {
-  type: 'setup';
+  type: 'SETUP';
   data: SetupOutgoingMessageData;
   messageId: string;
 }
@@ -54,7 +54,7 @@ interface ClientIncomingMessageData {
 type SetupIncomingMessageData = string;
 
 /** The data to be received in an incoming message */
-type IncomingMessageData<T extends MessageType> = T extends 'client'
+type IncomingMessageData<T extends MessageType> = T extends 'CLIENT'
   ? ClientIncomingMessageData
   : SetupIncomingMessageData;
 

@@ -1,2 +1,2 @@
-export * from './idbsql-driver';
+export * from './driver';
 export * from './types';

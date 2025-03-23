@@ -65,7 +65,7 @@ async function validateWorkerIsInitialized() {
  * Sets up the database
  */
 async function setupDatabase() {
-  await sendMessage('setup', { schema: [] });
+  await sendMessage('SETUP', { schema: [] });
 }
 
 /**
@@ -118,7 +118,7 @@ async function client(
 ) {
   await validateWorkerIsInitialized();
 
-  return sendMessage('client', { sql, params, method });
+  return sendMessage('CLIENT', { sql, params, method });
 }
 
 /**
