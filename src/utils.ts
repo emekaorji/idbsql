@@ -6,4 +6,8 @@ function generateMessageId(): string {
   return Math.random().toString(36).substring(2, 15);
 }
 
-export { generateMessageId };
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export { generateMessageId, wait };

@@ -86,8 +86,12 @@ async function setup() {
  * @param {MessageEvent} event - The message event
  */
 function setupMessageHandler(event) {
-  const { data } = event.data;
-  const { schema } = data;
+  const { messageId, data } = event.data;
+  const { databaseName, schema } = JSON.parse(data);
+
+  console.log(messageId);
+  console.log(databaseName);
+  console.log(schema);
 
   // TODO:
   // The first call to the worker file on initial page load should be to
@@ -95,10 +99,18 @@ function setupMessageHandler(event) {
   // - [ ] Step 2: Create a new in-memory database.
   // - [ ] Step 3: Create the schemas in the in-memory database.
   // - [ ] Step 4: Convert the DB to a file blob and save it to the IndexedDB database created in step 1.
-  //   - The "primary key" would be the in-memory database name (name would be passed during client initialization
+  //   - The "primary key" would be the in-memory database name (name would be passed during client initialization)
   //   - The "value" would be the in-memory database file blob.
 
   // Notes: Each in-memory database created would be an object inside the idbsql store.
+  // The object store would have the following properties:
+  // - name: The name of the in-memory database.
+  // - file: The file blob of the in-memory database.
+  // - schema: The schema of the in-memory database.
+
+  sendResult(event.data.messageId, {
+    // DB Details go here...
+  });
 }
 
 /**
@@ -161,8 +173,7 @@ function errorHandler(error) {
  * @returns {any} The result of the query
  */
 function executeQuery(sql, params, method) {
-  console.log(sql, params, method);
-
+  // console.log(sql, params, method);
   // Execute the query based on its type
   // switch (query.type) {
   //   case 'select':
@@ -176,7 +187,6 @@ function executeQuery(sql, params, method) {
   //   default:
   //     throw new Error(`Unknown query type: ${query.type}`);
   // }
-
   // switch (method) {
   //   case 'run':
   //     result = db.run(sql, params || []);
@@ -311,7 +321,7 @@ function sendResult(messageId, data) {
   self.postMessage({
     type: 'RESULT',
     messageId,
-    data,
+    data: JSON.stringify(data),
   });
 }
 

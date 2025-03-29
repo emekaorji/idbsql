@@ -18,6 +18,7 @@ interface ClientOutgoingMessageData {
 
 /** The data to be sent in a setup outgoing message */
 interface SetupOutgoingMessageData {
+  databaseName: string;
   schema: any;
 }
 
@@ -36,7 +37,7 @@ interface ClientOutgoingMessage {
 /** The setup outgoing message to be sent */
 interface SetupOutgoingMessage {
   type: 'SETUP';
-  data: SetupOutgoingMessageData;
+  data: string;
   messageId: string;
 }
 
